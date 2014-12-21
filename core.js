@@ -12,9 +12,7 @@
             restrict: 'E',
             templateUrl: 'post.html',
             scope: {
-                sortField: '@',
-                vkNews: '@',
-                fbId: '@'
+                sortField: '@'
             },
             link: function (scope, element) {
 
@@ -125,10 +123,6 @@
                 }
             }
         }
-
-        /*var socials = ['Vk', 'Facebook'].forEach(function(socialType) {
-            SocialFactory.factory(socialType).sendRequest();
-        });*/
 
         return {
             SocialFactory: SocialFactory//SocialFactory.news
