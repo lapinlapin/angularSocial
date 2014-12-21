@@ -14,11 +14,14 @@
             scope: {
                 sortField: '@'
             },
-            link: function (scope, element) {
-
-                var socials = ['Vk', 'Facebook'].forEach(function(socialType, i) {
-                    socData.SocialFactory.factory(socialType).sendRequest();
-                });
+            link: function (scope, element, attrs) {
+                var conf = {
+                        0: 'vkNews',
+                        1: 'fbId'
+                    },
+                    socials = ['Vk', 'Facebook'].forEach(function(socialType, i) {
+                        socData.SocialFactory.factory(socialType).sendRequest(attrs[conf[i]]);
+                    });
 
                 scope.posts = socData.SocialFactory.news;
             },
@@ -30,8 +33,8 @@
 
         function SocialFactory() {}
 
-        SocialFactory.prototype.sendRequest = function() {
-            this.options.getData();
+        SocialFactory.prototype.sendRequest = function(paramFindNews) {
+            this.options.getData(paramFindNews);
         }
 
         SocialFactory.news = [];
@@ -48,7 +51,8 @@
             this.options = {
                 url: 'https://api.vk.com/',
                 method: 'method/newsfeed.search?',
-                params: 'q=politics&count=50&extended=1&callback=JSON_CALLBACK',
+                news: 'q=',
+                params: '+&count=50&extended=1&callback=JSON_CALLBACK',
                 parseData: function (data) {
 
                     function parseUrl(text) {
@@ -74,10 +78,11 @@
                         }
                     });
                 },
-                getData: function () {
+                getData: function (paramFindNews) {
                     var self = this;
 
-                    $http.jsonp(this.url + this.method + this.params).success(function(data) {
+                    this.news = this.news + paramFindNews;
+                    $http.jsonp(this.url + this.method + this.news + this.params).success(function(data) {
                         self.parseData(data);
                     });
                 }
@@ -87,8 +92,8 @@
         SocialFactory.Facebook = function() {
             this.options = {
                 url: 'https://graph.facebook.com/v2.1/',
-                id: '317767418376137',
-                params: '/?fields=feed.limit(10),picture&access_token=CAACEdEose0cBAA3Q36NJw7MHKtXRFk0TtR4jbl5PfrE1CbueCB6Lmx9ezuyvLMtizGfsSpwJIixwZAsxARcg0P20ZA6p7WZBgRhkV1Umj7shU0eXB90nnVqXZBd0pXYz62SSksZCZBV8NZBejSWtTZAS1wmhNYSmxLlHqkZBLxUtwXani1Uygep4anPukBRsnjfsJJOy9JClYrT40YL58Doce&format=json',
+                id: '',
+                params: '/?fields=feed.limit(10),picture&access_token=CAACEdEose0cBAN7f6yhCpZBKXbLfKVZBvMQUhRFBomJzpqKnZCXv82pZBGfHY6x0y9Hu921Em6LMDv4uNL7VzGY802bH3ZAEv8Ci71zMdNo0i5C47WcSZCud6Ra6PnrXF6wDbLdWKrXjbMdD4qwlCbpoy9ZCr21NKesZCKpULIP0sYo5YFVGThlIhmHQXHhZAm5vBEd3dA7ZA7wy0g0aYcSAto&format=json',
                 parseData: function(data) {
 
                     function parseTime(date) {
@@ -114,9 +119,10 @@
                         });
                     });
                 },
-                getData: function () {
+                getData: function (paramFindNews) {
                     var self = this;
 
+                    this.id = paramFindNews;
                     $http.get(this.url + this.id + this.params).success(function(data) {
                         self.parseData(data);
                     });
@@ -125,7 +131,7 @@
         }
 
         return {
-            SocialFactory: SocialFactory//SocialFactory.news
+            SocialFactory: SocialFactory
         }
     }]);
 })();
