@@ -1,0 +1,22 @@
+<div class="main">
+    <div ng-repeat="post in posts | orderBy:sortField:reverse=true" class="post">
+        <div class="post__header">
+            <img ng-src="{{post.avatar}}" class="post__avatar">
+            </span></span></span><a target="_blank" ng-href="{{post.url}}"><p class="post__name">{{!!post.url && post.name | checkUrl}}</p></a>
+            <img class="post__typeimg" ng-src="img/{{post.ico}}">
+        </div>
+        <div class="post__content">
+            <img ng-src="{{post.other.src_big}}" class="post__img">
+            <p>{{post.text}}</p>
+        </div>
+        <hr>
+        <div class="post__stat">
+            <span class="post__date">{{post.date}}</span>
+				<span>
+					<span><img src="img/like.png">{{post.like}}</span>
+					<span><img src="img/comments.png">{{post.comments}}</span>
+					<span><img src="img/reposts.png">{{post.reposts}}</span>
+				</span>
+        </div>
+    </div>
+</div>
